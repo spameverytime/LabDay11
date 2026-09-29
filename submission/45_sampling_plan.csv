@@ -1,9 +1,9 @@
 camera_id,slice_type,frames,risk,rationale
-front,normal,,TODO,TODO
-front,hard,,TODO,TODO
-rear,normal,,TODO,TODO
-rear,hard,,TODO,TODO
-left,normal,,TODO,TODO
-left,hard,,TODO,TODO
-right,normal,,TODO,TODO
-right,hard,,TODO,TODO
+front,normal,30,Bỏ sót vật thể kích thước nhỏ ở khoảng cách xa do méo phối cảnh rìa fisheye,Đánh giá độ ổn định phát hiện xe và người ở điều kiện di chuyển thẳng tốc độ trung bình
+front,hard,35,Va chạm trực diện khi có ngược sáng chói lóa hoặc bóng râm gắt và mật độ giao thông hỗn tạp cao,Tập trung ca ngược sáng và người đi bộ/xe hai bánh cắt đầu xe đột ngột
+rear,normal,25,Không phát hiện kịp chướng ngại vật tĩnh khi lùi thẳng ở tốc độ thấp,Đảm bảo phát hiện vạch đỗ và xe đỗ phía sau ở điều kiện ánh sáng chuẩn
+rear,hard,30,Điểm mù cản sau và vật thể thấp (trẻ em/thú cưng/gờ giảm tốc) khuất tầm nhìn,Kiểm tra ca lùi xe góc hẹp với vật thể nằm sát cản sau trong điều kiện thiếu sáng
+left,normal,18,Lệch biên nhận diện do vật thể méo quang học mạnh ở rìa bán cầu thấu kính,Đánh giá khả năng theo dõi xe song song ở làn bên cạnh trong điều kiện bình thường
+left,hard,22,Bỏ sót xe máy/xe đạp vượt ẩu lách sát hông tại vùng đường seam ghép ảnh SVM,Kiểm tra ca vật thể cắt qua ranh giới giao thoa camera trước-hông ở khoảng cách cực gần
+right,normal,18,Nhận diện nhầm vỉa hè hoặc vạch kẻ lề đường thành vật cản di động,Đánh giá khả năng quét lề đường và người đi bộ ven đường ở tốc độ thông thường
+right,hard,22,Người đi bộ hoặc xe đạp từ vỉa hè lao nhanh xuống lòng đường trong góc mù gương,Tập trung ca chướng ngại vật sát mép hông phải và biến dạng quang học cực đại tại mép kính

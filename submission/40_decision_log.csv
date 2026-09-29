@@ -1,1 +1,5 @@
 id,date,question,decision,rationale,status
+D-01,2026-09-29,Cập nhật nhãn C0 sau khi hiệu chuẩn clinic,Khóa lại bản C0 cập nhật bằng --relock,Bỏ box nhầm ở vùng ego_body và chuẩn hóa box rider theo R03,resolved
+D-02,2026-09-29,Xử lý box xe con L4 dưới ngưỡng 40px trên frame adasind_295948.jpg,Quyết định xóa box L4 theo quy tắc R01,Vật thể quá nhỏ ở khoảng cách xa dưới ngưỡng H=40 không bắt buộc gán nhãn,resolved
+D-03,2026-09-29,Bất đồng giữa Annotator và Reference về đối tượng L3+M12 trên frame adasind_271039.jpg,Escalate lên đội ngũ guideline để thẩm định lại reference,Cả người gán và model đều phát hiện xe nhưng reference bị thiếu sót,escalated
+D-04,2026-09-29,Rework phân loại ThreeWheeler vs Car/Truck tại P5,Cập nhật nhãn ThreeWheeler và Truck cho 2 ca bị nhầm,Quan sát hình học cabin và mui bạt theo quy tắc R04/R11,resolved

@@ -8,11 +8,13 @@ không làm thay phần lý do.
 
 | camera_id | Hard case cần chọn | Vì sao dễ sai | Annotation space / calibration cần giữ | Cách review trước khi gọi là gold |
 |---|---|---|---|---|
-| front | TODO | TODO | TODO | TODO |
-| rear | TODO | TODO | TODO | TODO |
-| left | TODO | TODO | TODO | TODO |
-| right | TODO | TODO | TODO | TODO |
+| camera_id | Hard case cần chọn | Vì sao dễ sai | Annotation space / calibration cần giữ | Cách review trước khi gọi là gold |
+|---|---|---|---|---|
+| front | Ngược sáng gay gắt, chói lóa hoàng hôn/bình minh; người đi bộ và xe máy cắt ngang đầu xe đột ngột ở khoảng cách gần. | Độ tương phản cực cao gây mất chi tiết; méo phối cảnh rìa fisheye làm bounding box dễ lệch biên hoặc bỏ sót rider. | Không gian fisheye gốc (raw fisheye) kèm ma trận nội suy/thông số thấu kính (intrinsic calibration). | 2 chuyên gia độc lập gán nhãn mù, đối chiếu IoU ngưỡng 0.7; nếu bất đồng thì hội chẩn cùng Lead/Domain Expert. |
+| rear | Lùi xe vào ban đêm, chói đèn pha xe phía sau; trẻ em hoặc chướng ngại vật thấp dưới 50 cm nằm sát cản sau. | Vùng chiếu sáng yếu, nhiễu hạt sensor ban đêm; góc mù cản sau dễ nhầm với bóng râm mặt đường. | Raw fisheye mặt sau + ma trận ngoại suy (extrinsic) góc chúc xuống mặt đường. | Soát kỹ đáy box tiếp đất (ground contact); kiểm tra chéo với cảm biến siêu âm / radar lùi nếu có. |
+| left | Xe máy lách sát sườn xe ở vận tốc cao; vật thể di chuyển qua vùng seam cắt góc giữa camera trước và hông trái. | Biến dạng hình học cực đại ở rìa bán cầu thấu kính fisheye; hiện tượng đứt gãy hình ảnh tại đường nối seam. | Hệ tọa độ xe (ego vehicle coordinate) đồng bộ timestamp chuẩn mili-giây giữa front và left. | Review đồng thời 2 camera liền kề tại timestamp trùng khớp để xác định cùng 1 đối tượng hay 2 đối tượng tách rời. |
+| right | Người đi bộ bước từ vỉa hè xuống lòng đường ở góc khuất cột A/gương; vật cản tĩnh (cột điện, thùng rác, gờ vỉa hè). | Dễ nhầm lẫn giữa vạch sơn phân làn, bó vỉa hè và chướng ngại vật; méo biên làm sai lệch kích thước vật thể. | Raw fisheye hông phải + ma trận hiệu chỉnh BEV (Bird's Eye View). | Blind review 2 vòng, đối chiếu với bản đồ tĩnh hoặc video chuỗi frame liên tiếp để xác nhận chuyển động. |
 
-- Khi nào cần refresh gold set (đổi camera, calibration hoặc rule): TODO
-- Một ca seam/cross-camera cần policy và evidence trước khi ghép hai box: TODO
-- Vì sao peer agreement hoặc quality report trên ảnh một camera chưa chứng minh gold set đúng cho cả bốn camera: TODO
+- **Khi nào cần refresh gold set (đổi camera, calibration hoặc rule)**: Cần làm mới (refresh) gold set khi: (1) Thay đổi phần cứng camera (cảm biến, góc FOV, độ phân giải thấu kính); (2) Hiệu chuẩn lại rig (re-calibration thông số intrinsic/extrinsic thay đổi do tháo lắp/va đụng); (3) Cập nhật guideline gán nhãn mới (thay đổi định nghĩa class, ngưỡng chiều cao tối thiểu, hoặc quy tắc gộp rider).
+- **Một ca seam/cross-camera cần policy và evidence trước khi ghép hai box**: Khi một xe máy di chuyển qua đường seam giữa camera trước (front) và camera hông (left), vật thể xuất hiện đồng thời trên cả 2 ảnh fisheye với hình dạng méo khác nhau. Trước khi quyết định ghép (merge) thành 1 track ID duy nhất trong mô hình 360°, hệ thống bắt buộc phải có evidence: đồng bộ timestamp chính xác, thông số hiệu chuẩn extrinsic để chiếu về cùng hệ tọa độ 3D/BEV, và policy phân định ngưỡng khoảng cách không gian (spatial distance threshold) để tránh gộp nhầm 2 xe đi song song.
+- **Vì sao peer agreement hoặc quality report trên ảnh một camera chưa chứng minh gold set đúng cho cả bốn camera**: Việc đồng thuận (peer agreement) trên 1 camera chỉ phản ánh tính nhất quán cục bộ trên góc nhìn đó, không đại diện cho: (1) Các góc chết và đặc tính quang học khác nhau của 4 vị trí gắn camera; (2) Sai lệch căn chỉnh thời gian (temporal synchronization) và hình học tại các vùng chồng lấn (seams); (3) Sự khác biệt về điều kiện ánh sáng (ví dụ camera trước bị ngược sáng mặt trời trong khi camera sau hoàn toàn ngược lại). Do đó, chất lượng gold set SVM bắt buộc phải được đánh giá trên toàn bộ cụm 4 camera đồng bộ.

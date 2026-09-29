@@ -49,7 +49,26 @@ def doctor(base):
                 visibility = None
             messages.append("✓ Repo PUBLIC" if visibility == "PUBLIC" else "✗ Repo cần PUBLIC để chấm bài")
         else:
-            messages.append("✗ Không xác nhận được repo PUBLIC; kiểm tra remote và quyền gh")
+            verified = False
+            try:
+                remote_res = subprocess.run(["git", "config", "--get", "remote.origin.url"],
+                                            cwd=str(base), capture_output=True, text=True, check=False)
+                url = remote_res.stdout.strip()
+                match = re.search(r"github\.com[:/]([^/]+)/([^/\.]+)", url)
+                if match:
+                    owner, repo = match.group(1), match.group(2)
+                    req = urllib.request.Request("https://api.github.com/repos/%s/%s" % (owner, repo),
+                                                 headers={"User-Agent": "svm11-doctor"})
+                    with urllib.request.urlopen(req, timeout=5) as resp:
+                        api_data = json.loads(resp.read().decode("utf-8"))
+                        vis = api_data.get("visibility", "").upper()
+                        if vis == "PUBLIC" or api_data.get("private") is False:
+                            messages.append("✓ Repo PUBLIC")
+                            verified = True
+            except Exception:
+                pass
+            if not verified:
+                messages.append("✗ Không xác nhận được repo PUBLIC; kiểm tra remote và quyền gh")
     else:
         messages.append("! Chưa có gh; tự kiểm tra repo bài nộp là PUBLIC trên GitHub")
     path = base / "submission" / "00_setup" / "doctor.txt"
